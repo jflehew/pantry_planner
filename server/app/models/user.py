@@ -1,3 +1,4 @@
+from flask import jsonify
 from app import db
 from datetime import datetime, timezone
 
@@ -24,3 +25,9 @@ class User(db.Model):
             "updated_at": self.updated_at
         }
     
+    def get_basic_user_info(self):
+        return jsonify({
+            "id": self.id,
+            "firstName": self.first_name,
+            "lastName":self.last_name
+        })

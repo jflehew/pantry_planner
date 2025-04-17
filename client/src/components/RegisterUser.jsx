@@ -1,8 +1,12 @@
 import { useState } from "react"
 import { registerUser } from "../services/userService"
+import { useUserAuthContext } from '../context/UserAuthContext'
+import { useNavigate } from 'react-router-dom'
 
 
 export const RegisterUser = () => {
+    const {user, setUser, loading, setLoading} = useUserAuthContext()
+    const navigate = useNavigate()
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -11,7 +15,6 @@ export const RegisterUser = () => {
         confirmPassword: ""
     })
     const [error, setError] = useState("")
-    const [success, setSuccess] = useState(false)
 
     const handleChange = (e) => {
         setFormData({...formData, [e.target.name]: e.target.value})
@@ -24,8 +27,10 @@ export const RegisterUser = () => {
         }
 
         try{
-            await registerUser(formData)
-            setSuccess(true)
+            const res = await registerUser(formData)
+            setUser(res)
+            setLoading(false)
+            navigate('/dashboard')
         } catch(err){
             setError(err.errors?.email || err.message || "registration failed")
         }
@@ -76,8 +81,6 @@ export const RegisterUser = () => {
                 </label>
                 <button type="submit">Register</button>
                 {error && <p>{error}</p>}
-                {success && <p>Registration successful!</p>}
-
             </form>
         </>
     )
