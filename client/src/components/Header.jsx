@@ -33,6 +33,8 @@ export const Header = () => {
                 </>
             )}
             {user && <p><a href="" onClick={handelLogout}>Logout</a></p>}
+            {user && <Link to='/product/add'>Add a product to your pantry!</Link>}<br/> 
+            {user && <Link to={'/dashboard'}>Dashboard</Link> }
         </div>
 
     )

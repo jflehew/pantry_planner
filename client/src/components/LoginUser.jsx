@@ -11,7 +11,6 @@ export const LoginUser = () => {
         password: ""
     })
     const [error, setError] = useState("")
-    const [success, setSuccess] = useState(false)
 
     const handleChange = (e) => {
         setFormData({...formData, [e.target.name]: e.target.value})
@@ -25,7 +24,8 @@ export const LoginUser = () => {
             setLoading(false)
             navigate('/dashboard')
         } catch(err){
-            setError(err.message || "Login failed")
+            setError(err.message || "Login Failed")
+            console.log(err.message)
         }
     }
     
@@ -39,7 +39,6 @@ export const LoginUser = () => {
             </label>
             <button type="submit">Login</button>
             {error && <p>{error}</p>}
-            {success && <p>Welcome {user.firstName}</p>}
         </form>
     )
 }
