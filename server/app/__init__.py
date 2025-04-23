@@ -31,9 +31,12 @@ def create_app():
     Session(app)
 
     from app.models import user
+    from app.models import product
     from app.controllers.user_controller import user_bp
     app.register_blueprint(user_bp)
     from app.controllers.kroger_controller import kroger_bp
     app.register_blueprint(kroger_bp)
+    from app.controllers.product_controller import product_bp
+    app.register_blueprint(product_bp)
 
     return app

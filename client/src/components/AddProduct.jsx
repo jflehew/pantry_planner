@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react"
 import { getNearbyStoresByGeolocation, getNearbyStoresByZipcode, getProductsByTermAndLocation } from "../services/krogerService"
 import { useUserAuthContext } from "../context/UserAuthContext"
 import ClipLoader from 'react-spinners/Cliploader'
+import { createProduct } from "../services/productService"
 
 export const AddProduct = () => {    
     const { user } = useUserAuthContext()
@@ -16,9 +17,10 @@ export const AddProduct = () => {
         description: "",
         brand: "",
         price: 0.00,
-        householdQty: 0,
+        householdQty: 0.00,
+        householdQtyThreshold: 0.00,
         qtyType: "",
-        purchaseQty: 0,
+        purchaseQty: 0.00,
         image: "",
         productId: "",
         purchaseLocation: storeLocation.storeName,
@@ -34,6 +36,7 @@ export const AddProduct = () => {
     const[zipcode, setZipcode] = useState("")
     const [products, setProducts] = useState([])
     const debounceTimeout = useRef(null)
+    const [addedProducts, setAddedProducts] = useState([])
 
     
 
@@ -86,14 +89,19 @@ export const AddProduct = () => {
     const handleStoreLocation = e => {
         const selectedStoreId = e.target.value
         const selectedStore = stores.find(store => store.locationId === selectedStoreId)
-        selectedStore 
-        ? setStoreLocation(prev => ({
+        if (selectedStore) {
+        setStoreLocation(prev => ({
             ...prev,
             storeChosen: true,
             storeName: selectedStore.name,
             locationId: selectedStore.locationId
         }) )
-        : setStoreLocation(defaultStoreLocation)
+        setProduct(prev => ({
+            ...prev, 
+            locationId: selectedStore.locationId,
+            purchaseLocation: selectedStore.name
+        }))}
+        else setStoreLocation(defaultStoreLocation)
     }
     const handleProductGet = async e =>{
         const {value} = e.target
@@ -118,30 +126,53 @@ export const AddProduct = () => {
 
     const handleProductCreate = async e => {
         e.preventDefault()
-        const {name, value} = e.target
+        console.log(e)
+        try{
+            const newProduct = await createProduct(product)
+            setAddedProducts(prev => [...prev, newProduct])
+        } catch (err) {
+            console.error("Failed to create product", err)
+        }
     }
     const handleProductChange = e => {
+        const {name, value} = e.target
+        setProduct(prev => ({...prev, [name]: value }))
 
     }
     const addProductFromKroger = (description, brand, images, items, productId) => {
-        console.log(description, brand, images, items, productId)
         let image = "Image Not Available"
         let price = 0.00
         let purchaseQty = 0.00
         let qtyType = ""
         if (images.length > 0){
-            images.filter(image.perspective == "front")
-            .flatMap(img => (img.sizes || [])
-            .filter(size => size.size === "small")
-            .map(size => image = size.url)
-            )
+            const itemImage = images
+            .filter(image => image.perspective === "front")
+            .flatMap(img => img.sizes || [])
+            .find(size => size.size === "small")
+            
+            if(itemImage){
+                image = itemImage.url
+            }
         }
         if (items.length > 0){
             items.map(item => {
                 if (item.price){
                 price = item.price.regular}
                 if (item.size){
-
+                    const size = item.size.trim().toLowerCase()
+                    const regex = /^(\d+\/\d+|\d+(?:\.\d+)?)(?:\s*)?([a-zA-Z]+(?:\s+[a-zA-Z]+)*)?/
+                    const match = size.match(regex)
+                    if (match){
+                        let [_, qty, unit] = match
+                        if(qty.includes('/')){
+                            const [num, denom] = qty.split('/').map(Number)
+                            qty = denom !== 0 ? num / denom : null
+                        } else {
+                            qty = parseFloat(qty)
+                        }
+                        purchaseQty = qty
+                        qtyType  = unit || ""
+                    }
                 }
             })
         }
@@ -151,7 +182,11 @@ export const AddProduct = () => {
             brand: brand,
             image: image,
             price: price,
-            
+            qtyType: qtyType,
+            purchaseQty: purchaseQty,
+            productId: productId,
+            purchaseLocation: storeLocation.storeName,
+            locationId: storeLocation.locationId
         }))
     }
 return (
@@ -216,16 +251,8 @@ return (
                         </td>
                         <td>{description}</td>
                         <td>{brand}</td>
-                        {items.length > 0 &&
-                        items.map(item => (
-                            item.price ? <td>${item.price.regular}</td> : <td>No Price Found</td> 
-                        ))
-                        }
-                        {items.length > 0 &&
-                        items.map(item =>(
-                            item.size ? <td>{item.size}</td> : <td>No Size Found</td>
-                        ))
-                        }
+                        <td>{items[0]?.price?.regular ? `${items[0].price.regular}` : "Price not found"}</td>
+                        <td>{items[0]?.size ? `${items[0].size}` : "Size Not found"}</td>
                         <td><button onClick={() => addProductFromKroger(description, brand, images, items, productId)}>Add Product</button></td>
                     </tr>
                     ))}
@@ -298,25 +325,37 @@ return (
                     <label>Product Purchase Quantity:
                         <input 
                             type="number"
-                            min="0.00" 
+                            min="0.00"
+                            step="0.01"
                             onChange={handleProductChange} 
                             value={product.purchaseQty}
                             name="purchaseQty"
                         />
                     </label>
-                    {product.image !== "" &&
-                    <label>Product image:
+                    <label>Product In Home Quantity Threshhold:
                         <input 
-                            type="text" 
+                            type="number"
+                            min="0.00"
+                            max="0.99"
+                            step="0.01"
+                            onChange={handleProductChange} 
+                            value={product.householdQtyThreshold}
+                            name="householdQtyThreshold"
+                        />
+                    </label>
+                    {product.image !== "" &&
+                    <label>Product image: <img style={{width: "50px"}} src={product.image || "/imageNotAvailable.png"} alt={product.description} />
+                        <input 
+                            type="hidden" 
                             onChange={handleProductChange} 
                             value={product.image}
                             name="image"
                         />
                     </label>}
                     {product.productId &&
-                    <label>Product Identification Number:
+                    <label>Product Identification Number: {product.productId}
                         <input 
-                            type="text" 
+                            type="hidden" 
                             onChange={handleProductChange} 
                             value={product.productId}
                             name="productId"
@@ -331,15 +370,42 @@ return (
                         />
                     </label>
                     {product.locationId &&
-                    <label>Product Location Identification:
+                    <label>Product Location Identification: {product.locationId}
                         <input 
-                            type="text" 
+                            type="hidden" 
                             onChange={handleProductChange} 
                             value={product.locationId}
                             name="locationId"
                         />
                     </label>}
+                    <button type="submit">Add Product to Pantry</button>
             </form>
+            {addedProducts.length > 0 &&
+            <table>
+                <thead>
+                    <tr colSpan="3">
+                        <td>Products You've added to your pantry this session:</td>
+                    </tr>
+                    <tr>
+                        <td>Your Product Name:</td>
+                        <td>Product Description:</td>
+                        <td>Product Image:</td>
+                    </tr>
+                </thead>
+                <tbody>
+                        {addedProducts.map(addedProduct => (
+                            <tr key={addedProduct.productId}>
+                                <td>{addedProduct.productName}</td>
+                                <td>{addedProduct.description}</td>
+                                <td>
+                                    {addedProduct.image && addedProduct.image !== "Image Not Available" ? (
+                                    <img src={addedProduct.image} alt={addedProduct.description} style={{ width: "50px" }} />) 
+                                    : <img style={{width: "50px"}} src="/imageNotAvailable.png"/>}
+                                </td>
+                            </tr>
+                        ))}
+                </tbody>
+            </table>}
         </div>
     </>
 )

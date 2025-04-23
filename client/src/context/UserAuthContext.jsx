@@ -12,7 +12,6 @@ export const UserAuthContext = ( { children } ) => {
 
     useEffect(() =>{
         const checkSession = async () => {
-            console.log("I am in checkSession")
             const delay = ms => new Promise(res => setTimeout(res, ms))
             await delay(300)
             try{
