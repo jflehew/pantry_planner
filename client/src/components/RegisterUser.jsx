@@ -108,9 +108,8 @@ export const RegisterUser = () => {
             setLoading(false)
             navigate('/dashboard')
         } catch(err){
-            console.log(err)
             Object.entries(err).forEach(([field, message]) => {
-                setServerErrors(prev => ({...prev, [field]: message}))
+            setServerErrors(prev => ({...prev, [field]: message}))
             })
         } finally {
             setSubmitting(false)

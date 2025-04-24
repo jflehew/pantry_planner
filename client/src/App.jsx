@@ -16,7 +16,7 @@ function App() {
     <>
       <Header/>
       <Routes>
-      <Route path="/" element={<Navigate to="/login" replace/>}/>
+        <Route path="/" element={<Navigate to="/login" replace/>}/>
         <Route element={<PublicRoute/>}>
           <Route path='/register' element={ <RegisterUser/> }/>
           <Route path='/login' element={ <LoginUser/> }/>
@@ -24,6 +24,7 @@ function App() {
         <Route element={<PrivateRoute/>}>
           <Route path='/product/add' element={ <AddProduct/> }/>
           <Route path='/dashboard' element={ <Dashboard/> }/>
+          <Route path='/product/update/:productId' element={ <AddProduct/> }/>
         </Route>
       </Routes>
     </>
