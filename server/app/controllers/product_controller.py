@@ -1,7 +1,4 @@
-from ast import Return
-from email import message
-from itertools import product
-from sqlalchemy import delete, select, update
+from sqlalchemy import delete, select
 from flask import Blueprint, request, jsonify, session
 from app.models.product import Product
 from app import db

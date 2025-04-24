@@ -1,6 +1,6 @@
-from flask import jsonify
 from app import db
 from datetime import datetime, timezone
+from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 
 class Product(db.Model):
     __tablename__ = 'products'
@@ -19,7 +19,7 @@ class Product(db.Model):
     location_id = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
-    user_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     def to_dict(self): 
         return {
@@ -40,3 +40,13 @@ class Product(db.Model):
             "updatedAt": self.updated_at,
             "userId": self.user_id
         }
+    
+    @hybrid_property
+    def is_below_threshold(self):
+        if self.purchase_qty == 0:
+            return False
+        return (self.household_qty / self.purchase_qty) <= self.household_qty_threshold
+    
+    @is_below_threshold.expression
+    def is_below_threshold(cls):
+        return (cls.household_qty / cls.purchase_qty) <= cls.household_qty_threshold

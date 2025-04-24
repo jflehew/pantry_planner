@@ -32,11 +32,14 @@ def create_app():
 
     from app.models import user
     from app.models import product
+    from app.models import gorcery_list
     from app.controllers.user_controller import user_bp
     app.register_blueprint(user_bp)
     from app.controllers.kroger_controller import kroger_bp
     app.register_blueprint(kroger_bp)
     from app.controllers.product_controller import product_bp
     app.register_blueprint(product_bp)
+    from app.controllers.grocery_list_controller import grocery_list_bp
+    app.register_blueprint(grocery_list_bp)
 
     return app

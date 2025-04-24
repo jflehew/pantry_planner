@@ -5,6 +5,7 @@ import { Dashboard } from './components/Dashboard'
 import { LoginUser } from './components/LoginUser'
 import {PrivateRoute} from './context/PrivateRoute'
 import { AddProduct } from './components/AddProduct'
+import { GroceryList } from './components/GroceryList'
 import './App.css'
 import { Header } from './components/Header'
 import { PublicRoute } from './context/PublicRoute'
@@ -25,6 +26,7 @@ function App() {
           <Route path='/product/add' element={ <AddProduct/> }/>
           <Route path='/dashboard' element={ <Dashboard/> }/>
           <Route path='/product/update/:productId' element={ <AddProduct/> }/>
+          <Route path='/grocerylist' element={<GroceryList/>}/>
         </Route>
       </Routes>
     </>

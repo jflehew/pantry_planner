@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react'
 import { useUserAuthContext } from '../context/UserAuthContext'
 import { getAllProducts, deleteProduct, updateProductQty } from '../services/productService'
+import { getGroceryList } from '../services/groceryListService'
 import ClipLoader from 'react-spinners/Cliploader'
 import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
+import { addAllToList, addOneToList } from '../services/groceryListService'
 
 export const Dashboard = () => {
     const navigate = useNavigate()
     const {user} = useUserAuthContext()
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(false)
+    const [groceryList, setGroceryList] =useState([])
 
     const fetchProducts = async () => {
     try{
@@ -21,8 +24,30 @@ export const Dashboard = () => {
     } finally{
         setLoading(false)
     }}
+
+    const fetchGroceryList = async () => {
+            setLoading(true)
+            try{
+                const res = await getGroceryList()
+                setGroceryList(res)
+            } catch (err){
+                console.error(err)
+            }finally{
+                setLoading(false)
+            }
+        }
+
     useEffect(()  => {
     fetchProducts()
+    fetchGroceryList()
+    const addAllToGroceryList = async () =>{
+        try{
+            await addAllToList()
+        } catch(err){
+            console.error(err)
+        }
+    }
+    addAllToGroceryList()
     }, [])
 
     const handleDelete = async (id) => {
@@ -54,6 +79,14 @@ export const Dashboard = () => {
             )
         );
     };
+    const addOneToGroceryList = async (id) =>{
+        try{
+            await addOneToList(id)
+            fetchGroceryList()
+        }catch(err){
+            console.error(err)
+        }
+    }
 
     return(
         <>
@@ -67,6 +100,7 @@ export const Dashboard = () => {
                         <td>Quantity remaining:</td>
                         <td>Price:</td>
                         <td>Edit/Remove:</td>
+                        <td>Add to grocery list:</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -106,6 +140,17 @@ export const Dashboard = () => {
                     <td>
                         <Link to={`/product/update/${product.id}`}>Update</Link>
                         <button onClick={() => handleDelete(product.id)}>Delete</button>
+                    </td>
+                    <td>
+                        {!groceryList.some(item => item.product.id === product.id) 
+                        ? (
+                        <button onClick={() => addOneToGroceryList(product.id)}>
+                        Add to Grocery List
+                        </button>
+                        ) 
+                        : (
+                        <span style={{ color: 'gray' }}>Already added</span>
+                        )}
                     </td>
                     </tr>
                 ))
