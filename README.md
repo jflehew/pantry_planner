@@ -24,6 +24,18 @@ Future features:
         a. recipes will have a rating and a favorite button
         b. cooking a recipe will update your pantry and grocery list accordingly. 
         c. the ability to add an item to your grocery list will appear if that product id isn't found in your pantry
+
+    .env requirments to run the application properly:
+    1. .env on clinet side:
+        a. VITE_API_ACCESS to whatever your localhost is for python flask /api
+    2. .env on server side:
+        a. a database url connecting to MySql
+            DATABASE_URL=
+        b. a secret key
+            SECRET_KEY=
+        c. a client kroger id and clent secret associated with the CE public locations and products api
+            KROGER_CLIENT_ID=
+            KROGER_CLIENT_SECRET=
     
     Startup Instrcutions:
     1. Install dependencies 
