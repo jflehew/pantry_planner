@@ -3,6 +3,8 @@
 
 Pantry planner is meant to be an application to help manage your pantry and other common household items. 
 
+Github url: https://github.com/jflehew/pantry_planner
+
 Stack: I will be using a (python)Flask backend and a (js)React front end 
 CSS: I have used the tailwindcss framework for styling
 Features:
