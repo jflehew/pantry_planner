@@ -342,21 +342,23 @@ export const AddProduct = () => {
     }
 
 return (
-    <>
-        <div>
+    <div className="background">
+        <div className="form-container">
             <h2>Nearby Kroger Stores</h2>
             {locationDenied && (
                 <form onSubmit={handleLocationSearch}>
-                    <label>Please enter your zipcode:
-                        <input 
-                            type="text" 
-                            value={zipcode} 
-                            onChange={e => 
-                            setZipcode(e.target.value)}
-                            placeholder="Zipcode"
-                        />
-                    </label>
-                    <button type="submit">Find Nearby Stores</button>
+                    <div>
+                        <label>Please enter your zipcode:
+                            <input 
+                                type="text" 
+                                value={zipcode} 
+                                onChange={e => 
+                                setZipcode(e.target.value)}
+                                placeholder="Zipcode"
+                            />
+                        </label>
+                    </div>
+                    <button type="submit" className="text-sm">Find Nearby Stores</button>
                 </form>
             )}
             <select onChange={handleStoreLocation}>
@@ -372,11 +374,13 @@ return (
                     <option key={store.locationId} value={store.locationId}  >{store.name}</option>
                 ))}
             </select>
+            <div>
+                <label>Search for a product:
+                    <input type="text" onChange={handleProductGet}/>
+                </label>
+            </div>
         </div >
-            <label>Search for a product:
-                <input type="text" onChange={handleProductGet}/>
-            </label>
-        <div style={{ maxHeight: "400px", overflowY: "auto", border: "1px solid #ccc" }} >
+        <div className="table-container">
             <table>
                 <thead>
                     <tr>
@@ -389,7 +393,7 @@ return (
                     </tr>
                 </thead>
                 <tbody>
-                    {products.length === 0 && !productsLoading && <tr colSpan="6"><td>Sorry, we couldn't find any products at that location. Please try another location or using the No Store Location Option</td></tr>}
+                    {products.length === 0 && !productsLoading && <tr ><td colSpan="6" >Sorry, we couldn't find any products at that location. Please try another location or using the No Store Location Option</td></tr>}
                     {!productsLoading && products.map(({description, brand, images = [], items = [], productId}) => (
                     <tr key={productId}>
                         <td>
@@ -413,7 +417,7 @@ return (
                     ))}
                     {productsLoading && (
                     <tr>
-                        <td colSpan="5" style={{ height: "100px", textAlign: "center" }}>
+                        <td colSpan="6" style={{ height: "100px", textAlign: "center" }}>
                             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
                                 <ClipLoader color="#4a90e2" size={50} />
                             </div>
@@ -424,179 +428,243 @@ return (
             </table>
         </div>
         <div>
-            <h2></h2>
-            <form onSubmit={!update ? handleProductCreate : handleProductUpdate}>
-                    <label>Product Name:
-                        <input 
-                            type="text" 
-                            onChange={handleProductChange} 
-                            value={product.productName}
-                            name="productName"
-                            onBlur={handleBlur}
-                        />
-                        {inputUsed.productName && !productIsValid.productName && <p>You must enter a product name</p>}
-                        {serverErrors.productName && <p>{serverErrors.productName}</p>}
-                    </label>
-                    <label>Product Description:
-                        <textarea 
-                            type="text" 
-                            onChange={handleProductChange} 
-                            name="description"
-                            value={product.description}
-                            onBlur={handleBlur}
-                        >
-                        </textarea>
-                        {inputUsed.description && !productIsValid.description && <p>You must enter a description for your product</p>}
-                        {serverErrors.description && <p>{serverErrors.description}</p>}
-                    </label>
-                    <label>Product Brand:
-                        <input 
-                            type="text" 
-                            onChange={handleProductChange} 
-                            value={product.brand}
-                            name="brand"
-                            onBlur={handleBlur}
-                        />
-                        {inputUsed.brand && !productIsValid.brand && <p>You must enter a brand for your product</p>}
-                        {serverErrors.brand && <p>{serverErrors.brand}</p>}
-                    </label>
-                    <label>Product Price:
-                        <input 
-                            type="number"
-                            step="0.01"
-                            min="0.00"
-                            onChange={handleProductChange} 
-                            value={product.price}
-                            name="price"
-                            onBlur={handleBlur}
-                        />
-                        {inputUsed.price && !productIsValid.price && <p>You must enter a valid price</p>}
-                        {serverErrors.price && <p>{serverErrors.price}</p>}
-                    </label>
-                    <label>Product In Home Quantity:
-                        <input 
-                            type="number"
-                            min="0.00"
-                            step="0.01"
-                            onChange={handleProductChange} 
-                            value={product.householdQty}
-                            name="householdQty"
-                            onBlur={handleBlur}
-                        />
-                        {inputUsed.householdQty && !productIsValid.householdQty && <p>You must enter your current household quantity</p>}
-                        {serverErrors.householdQtyThreshold && <p>{serverErrors.householdQtyThreshold}</p>}
-                    </label>
-                    <label>Product Quantity Type:
-                        <input 
-                            type="text" 
-                            onChange={handleProductChange} 
-                            value={product.qtyType}
-                            name="qtyType"
-                            onBlur={handleBlur}
-                        />
-                        {inputUsed.qtyType && !productIsValid.qtyType && <p>you must enter the products quantity type</p>}
-                        {serverErrors.qtyType && <p>{serverErrors.qtyType}</p>}
-                    </label>
-                    <label>Product Purchase Quantity:
-                        <input 
-                            type="number"
-                            min="0.00"
-                            step="0.01"
-                            onChange={handleProductChange} 
-                            value={product.purchaseQty}
-                            name="purchaseQty"
-                            onBlur={handleBlur}
-                        />
-                        {inputUsed.purchaseQty && !productIsValid.purchaseQty && <p>You must enter the pruchase quantity for your product</p>}
-                        {serverErrors.purchaseQty && <p>{serverErrors.purchaseQty}</p>}
-                    </label>
-                    <label>Product In Home Quantity Threshhold:
-                        <input 
-                            type="number"
-                            min="0.00"
-                            max="0.99"
-                            step="0.01"
-                            onChange={handleProductChange} 
-                            value={product.householdQtyThreshold}
-                            name="householdQtyThreshold"
-                            onBlur={handleBlur}
-                        />
+            <div className="form-container">
+            <h2>Input Product Details</h2>
+                <form onSubmit={!update ? handleProductCreate : handleProductUpdate}>
+                        <div>
+                            <label>Product Name:
+                            <input 
+                                type="text" 
+                                onChange={handleProductChange} 
+                                value={product.productName}
+                                name="productName"
+                                onBlur={handleBlur}
+                            />
+                            </label>
+                        
+                        <div className="error-container">
+                            {inputUsed.productName && !productIsValid.productName && <p>You must enter a product name</p>}
+                            {serverErrors.productName && <p>{serverErrors.productName}</p>}
+                        </div>
+                        </div>
+                        <div>
+                            <label>Product Description:
+                                <input 
+                                    type="text" 
+                                    onChange={handleProductChange} 
+                                    name="description"
+                                    value={product.description}
+                                    onBlur={handleBlur}
+                                />
+                            </label>
+                        
+                        <div className="error-container">
+                            {inputUsed.description && !productIsValid.description && <p>You must enter a description for your product</p>}
+                            {serverErrors.description && <p>{serverErrors.description}</p>}
+                        </div>
+                        </div>
+                        <div>
+                        <label>Product Brand:
+                            <input 
+                                type="text" 
+                                onChange={handleProductChange} 
+                                value={product.brand}
+                                name="brand"
+                                onBlur={handleBlur}
+                            />
+                        </label>
+                        
+                        <div className="error-container">
+                            {inputUsed.brand && !productIsValid.brand && <p>You must enter a brand for your product</p>}
+                            {serverErrors.brand && <p>{serverErrors.brand}</p>}
+                        </div>
+                        </div>
+                        <div>
+                        <label>Product Price:
+                            <input 
+                                type="number"
+                                step="0.01"
+                                min="0.00"
+                                onChange={handleProductChange} 
+                                value={product.price}
+                                name="price"
+                                onBlur={handleBlur}
+                            />
+                        </label>
+                        
+                        <div className="error-container">
+                            {inputUsed.price && !productIsValid.price && <p>You must enter a valid price</p>}
+                            {serverErrors.price && <p>{serverErrors.price}</p>}
+                        </div>
+                        </div>
+                        <div>
+                        <label>Product In Home Quantity:
+                            <input 
+                                type="number"
+                                min="0.00"
+                                step="0.01"
+                                onChange={handleProductChange} 
+                                value={product.householdQty}
+                                name="householdQty"
+                                onBlur={handleBlur}
+                            />
+                        </label>
+                        
+                        <div className="error-container">
+                            {inputUsed.householdQty && !productIsValid.householdQty && <p>You must enter your current household quantity</p>}
+                            {serverErrors.householdQtyThreshold && <p>{serverErrors.householdQtyThreshold}</p>}
+                        </div>
+                        </div>
+                        <div>
+                        <label>Product Quantity Type:
+                            <input 
+                                type="text" 
+                                onChange={handleProductChange} 
+                                value={product.qtyType}
+                                name="qtyType"
+                                onBlur={handleBlur}
+                            />
+                        </label>
+                        
+                        <div className="error-container">
+                            {inputUsed.qtyType && !productIsValid.qtyType && <p>you must enter the products quantity type</p>}
+                            {serverErrors.qtyType && <p>{serverErrors.qtyType}</p>}
+                        </div>
+                        </div>
+                        <div>
+                        <label>Product Purchase Quantity:
+                            <input 
+                                type="number"
+                                min="0.00"
+                                step="0.01"
+                                onChange={handleProductChange} 
+                                value={product.purchaseQty}
+                                name="purchaseQty"
+                                onBlur={handleBlur}
+                            />
+                        </label>
+                        
+                        <div className="error-container">
+                            {inputUsed.purchaseQty && !productIsValid.purchaseQty && <p>You must enter the pruchase quantity for your product</p>}
+                            {serverErrors.purchaseQty && <p>{serverErrors.purchaseQty}</p>}
+                        </div>
+                        </div>
+                        <div>
+                        <label>Product In Home Quantity Threshhold:
+                            <input 
+                                type="number"
+                                min="0.00"
+                                max="0.99"
+                                step="0.01"
+                                onChange={handleProductChange} 
+                                value={product.householdQtyThreshold}
+                                name="householdQtyThreshold"
+                                onBlur={handleBlur}
+                            />
+                        </label>
+                        
+                        <div className="error-container">
                         {inputUsed.householdQtyThreshold && !productIsValid && <p>You must enter your preffered quantity threshold for purchase</p>}
                         {serverErrors.householdQtyThreshold && <p>{serverErrors.householdQtyThreshold}</p>}
-                    </label>
-                    {product.image !== "" &&
-                    <label>Product image: <img style={{width: "50px"}} src={product.image || "/imageNotAvailable.png"} alt={product.description} />
-                        <input 
-                            type="hidden" 
-                            onChange={handleProductChange} 
-                            value={product.image}
-                            name="image"
-                        />
-                        {serverErrors.image && <p>{serverErrors.image}</p>}
-                    </label>}
-                    {product.productId &&
-                    <label>Product Identification Number: {product.productId}
-                        <input 
-                            type="hidden" 
-                            onChange={handleProductChange} 
-                            value={product.productId}
-                            name="productId"
-                        />
-                        {serverErrors.productId && <p>{serverErrors.productId}</p>}
-                    </label>}
-                    <label>Purchase Location:
-                        <input 
-                            type="text" 
-                            onChange={handleProductChange} 
-                            value={product.purchaseLocation}
-                            name="purchaseLocation"
-                            onBlur={handleBlur}
-                        />
-                        {inputUsed.purchaseLocation && !productIsValid.purchaseLocation && <p>You must enter a purchase location</p>}
-                        {serverErrors.purchaseLocation && <p>{serverErrors.purchaseLocation}</p>}
-                    </label>
-                    {product.locationId &&
-                    <label>Product Location Identification: {product.locationId}
-                        <input 
-                            type="hidden" 
-                            onChange={handleProductChange} 
-                            value={product.locationId}
-                            name="locationId"
-                        />
-                        {serverErrors.locationId && <p>{serverErrors.locationId}</p>}
-                    </label>}
-                    {!update 
-                    ?<button type="submit" disabled={!isFormValid || submittingProduct}>{!submittingProduct ? "Add Product to Pantry": "Adding product to your pantry"}</button>
-                    :<button type="submit" disabled={!isFormValid || submittingProduct}>{!submittingProduct ? "Update Product": "updating product in your pantry"}</button>
-                    }
-            </form>
-            {addedProducts.length > 0 &&
-            <table>
-                <thead>
-                    <tr colSpan="3">
-                        <td>Products You've added to your pantry this session:</td>
-                    </tr>
-                    <tr>
-                        <td>Your Product Name:</td>
-                        <td>Product Description:</td>
-                        <td>Product Image:</td>
-                    </tr>
-                </thead>
-                <tbody>
-                        {addedProducts.map(addedProduct => (
-                            <tr key={addedProduct.productId}>
-                                <td>{addedProduct.productName}</td>
-                                <td>{addedProduct.description}</td>
-                                <td>
-                                    {addedProduct.image && addedProduct.image !== "Image Not Available" ? (
-                                    <img src={addedProduct.image} alt={addedProduct.description} style={{ width: "50px" }} />) 
-                                    : <img style={{width: "50px"}} src="/imageNotAvailable.png"/>}
-                                </td>
-                            </tr>
-                        ))}
-                </tbody>
-            </table>}
+                        </div>
+                        </div>
+                        <div>
+                        {product.image !== "" &&
+                        <label>Product image: <img style={{width: "50px"}} src={product.image || "/imageNotAvailable.png"} alt={product.description} />
+                            <input 
+                                type="hidden" 
+                                onChange={handleProductChange} 
+                                value={product.image}
+                                name="image"
+                            />
+                            
+                        </label>}
+                        
+                        <div className="error-container">
+                            {serverErrors.image && <p>{serverErrors.image}</p>}
+                        </div>
+                        </div>
+                        <div>
+                        {product.productId &&
+                        <label>Product Identification Number: {product.productId}
+                            <input 
+                                type="hidden" 
+                                onChange={handleProductChange} 
+                                value={product.productId}
+                                name="productId"
+                            />
+                        </label>}
+                        
+                        <div className="error-container">
+                            {serverErrors.productId && <p>{serverErrors.productId}</p>}
+                        </div>
+                        </div>
+                        <div>
+                        <label>Purchase Location:
+                            <input 
+                                type="text" 
+                                onChange={handleProductChange} 
+                                value={product.purchaseLocation}
+                                name="purchaseLocation"
+                                onBlur={handleBlur}
+                            />
+                        </label>
+                        <div className="error-container">
+                            {inputUsed.purchaseLocation && !productIsValid.purchaseLocation && <p>You must enter a purchase location</p>}
+                            {serverErrors.purchaseLocation && <p>{serverErrors.purchaseLocation}</p>}
+                        </div>
+                        </div>
+                        <div>
+                        {product.locationId &&
+                        <label>Product Location Identification: {product.locationId}
+                            <input 
+                                type="hidden" 
+                                onChange={handleProductChange} 
+                                value={product.locationId}
+                                name="locationId"
+                            />
+                        </label>}
+                        <div>
+                            {serverErrors.locationId && <p>{serverErrors.locationId}</p>}
+                        </div>
+                        </div>
+                        {!update 
+                        ?<button type="submit" disabled={!isFormValid || submittingProduct}>{!submittingProduct ? "Add Product to Pantry": "Adding product to your pantry"}</button>
+                        :<button type="submit" disabled={!isFormValid || submittingProduct}>{!submittingProduct ? "Update Product": "updating product in your pantry"}</button>
+                        }
+                </form>
+            </div>
+            <div className="table-container">
+                {addedProducts.length > 0 &&
+                <table >
+                    <thead>
+                        <tr>
+                            <td colSpan="3">Products You've added to your pantry this session:</td>
+                        </tr>
+                        <tr>
+                            <td>Your Product Name:</td>
+                            <td>Product Description:</td>
+                            <td>Product Image:</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            {addedProducts.map(addedProduct => (
+                                <tr key={addedProduct.productId}>
+                                    <td>{addedProduct.productName}</td>
+                                    <td>{addedProduct.description}</td>
+                                    <div className="flex items-center justify-center w-full h-full">
+                                    <td>
+                                        {addedProduct.image && addedProduct.image !== "Image Not Available" ? (
+                                        <img src={addedProduct.image} alt={addedProduct.description} style={{ width: "50px" }} />) 
+                                        : <img style={{width: "50px",}} src="/imageNotAvailable.png"/>}
+                                    </td>
+                                    </div>
+                                </tr>
+                            ))}
+                    </tbody>
+                </table>}
+            </div>
         </div>
-    </>
+    </div>
 )
 }

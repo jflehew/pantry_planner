@@ -42,9 +42,10 @@ export const GroceryList = () =>{
         }
     }
     return (
-    <div>
-        <h2>{user.firstName} {user.lastName}'s Grocery List!</h2>
-        <table>
+        <div className="background">
+        <h2 className="text-4xl text-center font-handwritten font-bold mb-6 underline text-amber-600 mt-8">{user.firstName} {user.lastName}'s Grocery List:</h2>
+        <div className="grocery-table-container">
+        <table >
             <thead>
                 <tr>
                     <td>Image:</td>
@@ -62,7 +63,11 @@ export const GroceryList = () =>{
                 </tr>
                 : groceryList.filter(item => item.productPurchased).map( item =>(
                 <tr key={item.id}>
-                    <td><img src={item.product.image} alt={item.product.productName} style={{width: "50px"}} /></td>
+                    <td>
+                        <div className="flex items-center justify-center w-full h-full">
+                            <img src={item.product.image} alt={item.product.productName} style={{width: "50px"}} />
+                        </div>
+                    </td>
                     <td>{item.product.productName}</td>
                     <td>{item.product.description}</td>
                     <td>{item.product.purchaseQty}</td>
@@ -82,7 +87,9 @@ export const GroceryList = () =>{
                 </tr>
             </tbody>
         </table>
-        <h2>Items you don't plan on purchasing this shoping session!</h2>
+        </div>
+        <h2 className="text-4xl text-center font-handwritten font-bold mb-6 underline text-amber-600 mt-8">Items you don't plan on purchasing this shoping session:</h2>
+        <div className="grocery-table-container">
         <table>
             <thead>
                 <tr>
@@ -102,7 +109,11 @@ export const GroceryList = () =>{
                 </tr>
                 : groceryList.filter(item => !item.productPurchased).map(item =>(
                 <tr key={item.id}>
-                    <td><img src={item.product.image} alt={item.product.productName} style={{width: "50px"}} /></td>
+                    <td>
+                    <div className="flex items-center justify-center w-full h-full">
+                        <img src={item.product.image} alt={item.product.productName} style={{width: "50px"}} />
+                    </div>
+                    </td>
                     <td>{item.product.productName}</td>
                     <td>{item.product.description}</td>
                     <td>{item.product.purchaseQty}</td>
@@ -112,6 +123,7 @@ export const GroceryList = () =>{
                 ))}
             </tbody>
         </table>
+        </div>
     </div>
     )
 }

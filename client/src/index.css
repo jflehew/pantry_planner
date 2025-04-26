@@ -53,7 +53,7 @@
     text-ink
     shadow-2xl
     flex
-    mt-24
+    m-24
     flex-col
     justify-center
     items-center
@@ -99,6 +99,19 @@
     text-coal
 }
 
+.form-container select {
+    @apply
+    w-full
+    px-3
+    py-2
+    rounded
+    border-4
+    shadow-lg
+    border-ink
+    bg-parchment
+    text-coal
+}
+
 .form-container div > label > input:focus {
     @apply
     border-4
@@ -115,8 +128,8 @@
     font-bold
     bg-ink
     text-xl
-    w-[15vw]
-    h-[3vw]
+    /* w-[15vw]
+    h-[3vw] */
     shadow
     rounded-lg
     p-3
@@ -243,6 +256,116 @@
     disabled:shadow-none
 }
 .table-container table > tbody > tr > td > form > input{
+    @apply
+    p-1
+    text-coal
+    rounded-lg
+    w-full
+    bg-mint
+}
+
+.grocery-table-container{
+    @apply
+    flex
+    justify-center
+    overflow-y-auto
+    max-h-[70vh]
+    font-handwritten
+    font-bold
+    text-lg
+    text-center
+    mx-14
+}
+
+
+.grocery-table-container table {
+    @apply
+    text-center
+    text-coal
+    border-8
+    border-slate-400
+    bg-slate-200
+    rounded-2xl
+    overflow-hidden
+}
+
+.grocery-table-container table > thead > tr {
+    @apply
+    text-lg
+    underline
+    border-8
+    border-slate-400
+    h-32
+}
+
+.grocery-table-container table > tbody > tr {
+    @apply
+    border-8
+    border-slate-400
+    shadow-red-200
+    h-32
+}
+
+.grocery-table-container table > tbody > tr > td {
+    @apply
+    w-60
+}
+.grocery-table-container::-webkit-scrollbar {
+    @apply
+    w-2
+}
+
+.grocery-table-container::-webkit-scrollbar-track {
+    @apply
+    bg-slate-400
+    rounded-sm
+}
+
+.grocery-table-container::-webkit-scrollbar-thumb {
+    @apply
+    bg-gradient-to-b
+    from-meadow
+    to-emerald-400
+    rounded-sm
+}
+
+.grocery-table-container table > tbody > tr > td > button {
+    @apply
+    flex
+    justify-center
+    items-center
+    text-coal
+    font-bold
+    bg-ink
+    text-lg
+    p-1
+    my-2
+    shadow
+    rounded-lg
+    mx-auto
+    disabled:opacity-40
+    disabled:cursor-not-allowed
+    disabled:shadow-none
+}
+
+.grocery-table-container table > tbody > tr > td > form > button {
+    @apply
+    flex
+    justify-center
+    items-center
+    text-clay
+    font-bold
+    bg-ink
+    shadow
+    rounded-lg
+    my-1
+    p-1
+    mx-auto
+    disabled:opacity-40
+    disabled:cursor-not-allowed
+    disabled:shadow-none
+}
+.grocery-table-container table > tbody > tr > td > form > input{
     @apply
     p-1
     text-coal
