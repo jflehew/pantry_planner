@@ -14,6 +14,7 @@ import { PublicRoute } from './context/PublicRoute'
 function App() {
 
   return (
+
     <>
       <Header/>
       <Routes>
@@ -30,6 +31,7 @@ function App() {
         </Route>
       </Routes>
     </>
+
   )
 }
 

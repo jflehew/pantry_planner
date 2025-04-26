@@ -9,8 +9,8 @@ export const PrivateRoute = () =>{
 
 
     if (loading) return (
-        <div style={{ display: "flex", justifyContent: "center", marginTop: "4rem" }}>
-            <ClipLoader color="#4a90e2" size={50} />
+        <div className='background' style={{ display: "flex", justifyContent: "center"}}>
+            <ClipLoader color="#aec6cf" size={50} />
         </div>
     )
     return user ? <Outlet /> : <Navigate to="/login" replace/>

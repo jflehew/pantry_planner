@@ -1,3 +1,4 @@
+from email import message
 from sqlalchemy import delete, select
 from flask import Blueprint, request, jsonify, session
 from app.models.product import Product
@@ -93,6 +94,12 @@ def update_product():
 def update_household_qty():
     data = request.get_json()
     product = db.session.get(Product, data['id'])
+    try:
+        value = float(data['householdQty'])
+        if value < 0:
+            return {"message" : "Your household quantity cannot be negative"}, 400
+    except (TypeError, ValueError):
+        return {"message" : "Your household quantity must be a number"}, 400
     if not product:
         return jsonify({'message': 'product not found'}), 404
     
