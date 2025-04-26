@@ -45,6 +45,7 @@ Future features:
         a. run command 'pipenv shell' in the server directory
     3. set any environment variables needs in your .env the the server directory file to connect to your MySql and update the database
     4. run database migrations:
+        c. add the pantry_planner_db schema to your local mysql database
         b. run the command 'flask db upgrade' in the server directory
         a. I have included a sql script and a .mwb file in case this doesn't work properly, however, you should not need need them because of the migrations directory and versions directory associated with flask. this is a function of SqlAlchemy
     5. start the server and client
