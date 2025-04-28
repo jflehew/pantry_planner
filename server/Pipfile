@@ -13,6 +13,8 @@ flask-cors = "*"
 python-dotenv = "*"
 email-validator = "*"
 pymysql = "*"
+requests = "*"
+Flask-Session = "*"
 
 [dev-packages]
 
